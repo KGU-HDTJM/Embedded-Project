@@ -30,7 +30,7 @@ int main(void)
             break;
         }
 
-        if (input < 1 || input > 4) {
+        if (value < 1 || value > 4) {
             printf("Please enter 1~4\n");
             continue;
         }

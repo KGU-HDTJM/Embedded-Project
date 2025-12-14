@@ -5,10 +5,11 @@
 
 #define IOCTL_NUMBER (100)
 #define IOCTL_SET_VALUE _IOW(IOCTL_NUMBER, 1, int)
-#define CHR_DEV_NAME ("digitModule")
+#define CHR_DEV_NAME ("digitCtrl")
+#define MAJOR (223)
 
-#include "../term.h"
-#include "../LED/led.h"
+//#include "../term.h"
+//#include "../LED/led.h"
 
 enum digit_mode
 {
@@ -47,10 +48,9 @@ static long digit_ioctl(struct file* file, unsigned int cmd, unsigned long arg)
 
 void digit_ctrl_handler(void)
 {
-    int i;
-    enum led_mode led_mode = get_led_mode();
+   // enum led_mode led_mode = get_led_mode();
 
-    if(g_digitCtrl == DIGIT_NON)
+   /* if(g_digitCtrl == DIGIT_NON)
     {
         return;
     }
@@ -78,7 +78,7 @@ void digit_ctrl_handler(void)
             default: return;
         }
         return;
-    }
+    }*/
 
     switch(g_digitCtrl)
     {
@@ -86,28 +86,28 @@ void digit_ctrl_handler(void)
             {
 		        // blink mode
 		        printk(KERN_INFO "switch: LED_MODE_BLINK\n");
-		        set_led_mode(LED_MODE_BLINK);
+//		        set_led_mode(LED_MODE_BLINK);
 	        }
         break;
         case DIGIT_1:
         	{
 		        // sequential mode
 		        printk(KERN_INFO "switch: LED_MODE_SEQUENTIAL\n");
-		        set_led_mode(LED_MODE_SEQUENTIAL);
+//		        set_led_mode(LED_MODE_SEQUENTIAL);
 	        }
 	    break;
         case DIGIT_2:
             {
 		        // manual mode
 		        printk(KERN_INFO "switch: LED_MODE_MANUAL\n");
-		        set_led_mode(LED_MODE_MANUAL);
+//		        set_led_mode(LED_MODE_MANUAL);
 	        }
             break;
         case DIGIT_3:
             {
 		        // reset button
 	        	printk(KERN_INFO "switch: LED_MODE_RESET\n");
-		        set_led_mode(LED_MODE_RESET);
+//		        set_led_mode(LED_MODE_RESET);
 	        }
 	        break;
         default: return;
@@ -123,21 +123,21 @@ static int digit_module_init(void)
 {
     int registration;
 
-    registration = register_chrdev(DEV_MAJOR_NUMBER_START, CHR_DEV_NAME, &digit_fops);
+    registration = register_chrdev(MAJOR, CHR_DEV_NAME, &digit_fops);
     if(registration < 0)
     {
         printk(KERN_ALERT "digit module registration failed\n");
         return registration;
     }
-    led_init();
+    //led_init();
     return 0;
 }
 
 static void digit_module_exit(void)
 {
     printk(KERN_INFO "digit module exit\n");
-    unregister_chrdev(DEV_MAJOR_NUMBER_START, CHR_DEV_NAME);
-    led_exit();
+    unregister_chrdev(MAJOR, CHR_DEV_NAME);
+  //  led_exit();
 }
 
 module_init(digit_module_init);
